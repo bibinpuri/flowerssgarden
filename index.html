@@ -22,6 +22,7 @@
             align-items: center;
             z-index: 1000000;
             transition: opacity 0.5s ease;
+            letter-spacing: 2px;
         }
 
         .landing-page.hidden {
@@ -64,7 +65,7 @@
         }
 
         .enter-btn:hover {
-            background: #ff8787;
+            background: #fc4444;
             transform: scale(1.05);
             box-shadow: 0 0 25px rgba(255, 107, 107, 0.8);
         }
@@ -98,11 +99,72 @@
 
         }
 
+        .night {
+    position: fixed; /* Already present, likely */
+    z-index: 1; /* Bottom layer */
+}
+
+.middle-image {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+  
+    transform: translate(-50%, -50%);
+    z-index: 5; /* Middle layer */
+    width: 100vmin;
+    height: 100vmin;
+    background-image: url('image/bgimage.png'); /* Adjust path as needed */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    
+    animation: middleimg 5s backwards, floatAnimation 6s ease-in-out 5s infinite;
+    display: none;
+    opacity: 0;
+}
+
+@keyframes middleimg {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, 100%) scale(0.5);
+        filter: blur(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        filter: blur(0px);
+    }
+}
+
+@keyframes floatAnimation {
+  0% {
+    transform: translate(-50%, -50%); 
+  }
+  50% {
+    transform: translate(-50%, -45%); 
+  }
+  100% {
+    transform: translate(-50%, -50%);  
+  }
+}
+
+
+.flowers {
+    position: relative; /* Already present, likely */
+    z-index: 10; /* Top layer with butterflies */
+}
+
+.shape-container.butterfly-container {
+    position: absolute; /* Already present, likely */
+    z-index: 15; /* Ensure butterflies are above middle-image and flowers */
+}
         /* Keep animations paused initially */
         body.paused * {
             animation-play-state: paused !important;
         }
     </style>
+
+
     <!-- Landing Page Overlay -->
     <div class="landing-page" id="landingPage">
       <div class="landing-container">
@@ -125,23 +187,29 @@
     const landingPage = document.getElementById('landingPage');
     const body = document.body;
 
+
+
     function enterGarden() {
-        // Hide landing page
         landingPage.classList.add('hidden');
-        // Start animations
         body.classList.remove('paused');
-        // Start audio with error handling
+        
+        const middleImage = document.querySelector('.middle-image');
+        middleImage.style.display = 'block';
+        setTimeout(() => {
+            middleImage.style.opacity = '1';
+        }, 10);
+        
         audio.play().then(() => {
             console.log("Audio playing successfully");
             audio.muted = false;
-            muteButton.innerHTML = '&#128263' ;
-            muteButton.style.display = 'block'; // Ensure button is visible
+            muteButton.innerHTML = '🔇';
+            muteButton.style.display = 'block';
         }).catch(error => {
             console.error("Audio playback failed:", error);
-            // Fallback: try playing after a slight delay
             setTimeout(() => audio.play(), 100);
         });
     }
+    
 
     function toggleMute() {
         if (audio.muted || !audio.currentTime) { // Check if muted or not started
@@ -214,7 +282,7 @@
              </div>
           </div>
         <div class="night"></div>
-       
+        <div class="middle-image"></div>
         <div style="display: none;" class="flowers">
           <div class="flower flower--1">
             <div class="flower__leafs flower__leafs--1">
